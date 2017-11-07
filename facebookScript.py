@@ -8,8 +8,7 @@ from datetime import datetime
 # posts pedidos
 nPosts = 100
 # usuarios pedidos
-nUsers = 100000
-
+nUsers = 100
 
 def get_page_data(page_id, access_token):
     api_endpoint = "https://graph.facebook.com/v2.10/"
@@ -29,22 +28,18 @@ def get_page_data(page_id, access_token):
         elif basattr(e, 'reason'):
             return e.reason
 
-page_id = "1674769549453611" # username or id
+page_id = "260792570643929"
 token = "137795993535371|Y-v_qKANnKCQTlkVUxtGWLvViVc" # access token
 page_data = get_page_data(page_id, token)
 
 print( "VERIFICACIÓN INGRESO DE DATOS A LA API" )
 
-# print(page_data)
-# print( "Page Name: " + page_data['name'] )
-
-
-
 # Cantidad de posts reales
 real_nPosts = len(page_data['posts']['data'])
 print(real_nPosts)
+
 # create the table if it is not in the db
-conn = sqlite3.connect('facebookData.db')
+conn = sqlite3.connect('incarail.db')
 cur = conn.cursor()
 cur.execute('''CREATE TABLE IF NOT EXISTS Posts (Post_id real, Mesg_post text, Post_url real, Num_likes real)''')
 cur.execute('''CREATE TABLE IF NOT EXISTS Users (Usr_id real, Usr_name text, Usr_url text, Usr_picture_url text)''')
@@ -86,7 +81,7 @@ for i in range(real_nPosts):
             print(ins2)
             cur.execute('INSERT INTO Likes (Post_id, Usr_id) VALUES (?,?)', ins2)
 
-    ins3 = [(Post_id, Mesg_post, Post_url, Num_likes)]
+    ins3 = (Post_id, Mesg_post, Post_url, Num_likes)
     print('--------------------------------------------------------------')
     print(ins3)
     cur.execute('INSERT INTO Posts (Post_id, Mesg_post, Post_url, Num_likes) VALUES (?,?,?,?)', ins3)
